@@ -7,6 +7,10 @@ import { X, Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { useCart, resolveCart } from "@/lib/store/cart";
 import { formatBDT, EASE_EXPO } from "@/lib/utils";
 import MagneticButton from "@/components/ui/MagneticButton";
+import CheckoutForm, {
+  PAYMENT_METHODS,
+  type CheckoutValues,
+} from "@/components/service/CheckoutForm";
 
 /** Animated money value — re-keyed so it counts on every total change. */
 function Amount({ value }: { value: number }) {
@@ -29,8 +33,10 @@ function Amount({ value }: { value: number }) {
 export default function CartSheet() {
   const { lines, isOpen, close, setQuantity, remove, clear } = useCart();
   const { resolved, subtotal, vat, total, itemCount } = resolveCart(lines);
-  const [checkingOut, setCheckingOut] = useState(false);
-  const [done, setDone] = useState(false);
+  const [step, setStep] = useState<"cart" | "checkout" | "done">("cart");
+  const [submitting, setSubmitting] = useState(false);
+  /** Kept after `clear()` so the confirmation can still describe the order. */
+  const [placed, setPlaced] = useState<CheckoutValues | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -43,12 +49,19 @@ export default function CartSheet() {
     };
   }, [isOpen, close]);
 
-  const checkout = async () => {
-    setCheckingOut(true);
+  const placeOrder = async (values: CheckoutValues) => {
+    setSubmitting(true);
     await new Promise((r) => setTimeout(r, 1100));
-    setCheckingOut(false);
-    setDone(true);
+    setSubmitting(false);
+    setPlaced(values);
+    setStep("done");
     clear();
+  };
+
+  /** Back to a clean cart once the confirmation is dismissed. */
+  const reset = () => {
+    setStep("cart");
+    setPlaced(null);
   };
 
   return (
@@ -72,11 +85,13 @@ export default function CartSheet() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.55, ease: EASE_EXPO }}
-            className="glass fixed inset-y-0 right-0 z-[91] flex w-full max-w-[460px] flex-col rounded-l-[24px] border-y-0 border-r-0"
+            className="glass-sheet fixed inset-y-0 right-0 z-[91] flex w-full max-w-[460px] flex-col rounded-l-[24px] border-y-0 border-r-0"
           >
             <div className="flex items-center justify-between border-b border-hairline px-6 py-5">
               <h2 className="text-lg font-semibold tracking-[-0.02em]">
-                Your Cart{itemCount > 0 && ` (${itemCount})`}
+                {step === "checkout"
+                  ? "Checkout"
+                  : `Your Cart${itemCount > 0 ? ` (${itemCount})` : ""}`}
               </h2>
               <button
                 onClick={close}
@@ -87,7 +102,7 @@ export default function CartSheet() {
               </button>
             </div>
 
-            {done ? (
+            {step === "done" ? (
               <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
                 <svg viewBox="0 0 52 52" className="size-14 text-toyota-red" fill="none" aria-hidden>
                   <motion.circle
@@ -107,12 +122,21 @@ export default function CartSheet() {
                 </h3>
                 <p className="mt-2 text-[15px] leading-relaxed text-ink-muted">
                   Reference <span className="font-mono">TBD-P-2026-0417</span>.
-                  Your parts will be ready for collection at Toyota Tejgaon
-                  within two working days.
+                  {placed
+                    ? ` Your parts will be delivered to ${placed.division} within two working days, ${
+                        placed.payment === "cod"
+                          ? "payable to the rider on arrival"
+                          : `paid by ${
+                              PAYMENT_METHODS.find(
+                                (m) => m.value === placed.payment,
+                              )?.label
+                            }`
+                      }.`
+                    : " Your parts will be delivered within two working days."}
                 </p>
                 <button
                   onClick={() => {
-                    setDone(false);
+                    reset();
                     close();
                   }}
                   className="mt-7 text-[15px] font-medium text-toyota-red"
@@ -120,6 +144,13 @@ export default function CartSheet() {
                   Continue shopping
                 </button>
               </div>
+            ) : step === "checkout" && resolved.length > 0 ? (
+              <CheckoutForm
+                total={total}
+                submitting={submitting}
+                onSubmit={placeOrder}
+                onBack={() => setStep("cart")}
+              />
             ) : resolved.length === 0 ? (
               <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
                 <span className="flex size-16 items-center justify-center rounded-full bg-ink/[0.05] text-ink-muted">
@@ -151,7 +182,7 @@ export default function CartSheet() {
                         transition={{ duration: 0.4, ease: EASE_EXPO }}
                         className="mb-4 overflow-hidden"
                       >
-                        <div className="flex gap-4 rounded-[20px] bg-white/60 p-3">
+                        <div className="flex gap-4 rounded-[20px] bg-bg-tint p-3">
                           <div className="relative size-20 shrink-0 overflow-hidden rounded-[14px] bg-bg-tint">
                             <Image
                               src={line.product.image}
@@ -215,7 +246,11 @@ export default function CartSheet() {
                   </AnimatePresence>
                 </ul>
 
-                <div className="border-t border-hairline px-6 py-5">
+                <div className="relative z-10 border-t border-hairline bg-bg-tint px-6 py-5">
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute inset-x-0 -top-10 h-10 bg-gradient-to-t from-bg-tint to-transparent"
+                  />
                   <dl className="space-y-2 text-[15px]">
                     <div className="flex justify-between text-ink-muted">
                       <dt>Subtotal</dt>
@@ -234,10 +269,9 @@ export default function CartSheet() {
                   <MagneticButton
                     variant="red"
                     className="mt-5 w-full"
-                    onClick={checkout}
-                    disabled={checkingOut}
+                    onClick={() => setStep("checkout")}
                   >
-                    {checkingOut ? "Processing…" : "Proceed to Checkout"}
+                    Proceed to Checkout
                   </MagneticButton>
                   <p className="mt-3 text-center text-[12px] text-ink-muted">
                     Demonstration checkout — no payment is taken.

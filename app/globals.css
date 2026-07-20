@@ -28,6 +28,7 @@
 
 :root {
   --glass: rgba(255, 255, 255, 0.62);
+  --glass-sheet: rgba(252, 252, 253, 0.96);
   --glass-border: rgba(255, 255, 255, 0.85);
   --section-y: clamp(96px, 14vh, 180px);
 }
@@ -80,6 +81,19 @@ html.lenis body {
      UI/UX Pro Max skill; iridescence deliberately dropped per §2 override. */
   .glass {
     background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  }
+
+  /* Glass tuned for panels you read and type into. Same blur and geometry as
+     .glass, but opaque enough that page content behind it can't compete with
+     form labels and input text. */
+  .glass-sheet {
+    background: var(--glass-sheet);
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
