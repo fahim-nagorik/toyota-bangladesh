@@ -1,16 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { X, Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { useCart, resolveCart } from "@/lib/store/cart";
 import { formatBDT, EASE_EXPO } from "@/lib/utils";
+import Link from "next/link";
 import MagneticButton from "@/components/ui/MagneticButton";
-import CheckoutForm, {
-  PAYMENT_METHODS,
-  type CheckoutValues,
-} from "@/components/service/CheckoutForm";
 
 /** Animated money value — re-keyed so it counts on every total change. */
 function Amount({ value }: { value: number }) {
@@ -31,12 +28,8 @@ function Amount({ value }: { value: number }) {
 }
 
 export default function CartSheet() {
-  const { lines, isOpen, close, setQuantity, remove, clear } = useCart();
+  const { lines, isOpen, close, setQuantity, remove } = useCart();
   const { resolved, subtotal, vat, total, itemCount } = resolveCart(lines);
-  const [step, setStep] = useState<"cart" | "checkout" | "done">("cart");
-  const [submitting, setSubmitting] = useState(false);
-  /** Kept after `clear()` so the confirmation can still describe the order. */
-  const [placed, setPlaced] = useState<CheckoutValues | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -48,21 +41,6 @@ export default function CartSheet() {
       document.body.style.overflow = "";
     };
   }, [isOpen, close]);
-
-  const placeOrder = async (values: CheckoutValues) => {
-    setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 1100));
-    setSubmitting(false);
-    setPlaced(values);
-    setStep("done");
-    clear();
-  };
-
-  /** Back to a clean cart once the confirmation is dismissed. */
-  const reset = () => {
-    setStep("cart");
-    setPlaced(null);
-  };
 
   return (
     <AnimatePresence>
@@ -89,9 +67,7 @@ export default function CartSheet() {
           >
             <div className="flex items-center justify-between border-b border-hairline px-6 py-5">
               <h2 className="text-lg font-semibold tracking-[-0.02em]">
-                {step === "checkout"
-                  ? "Checkout"
-                  : `Your Cart${itemCount > 0 ? ` (${itemCount})` : ""}`}
+                Your Cart{itemCount > 0 && ` (${itemCount})`}
               </h2>
               <button
                 onClick={close}
@@ -102,56 +78,7 @@ export default function CartSheet() {
               </button>
             </div>
 
-            {step === "done" ? (
-              <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
-                <svg viewBox="0 0 52 52" className="size-14 text-toyota-red" fill="none" aria-hidden>
-                  <motion.circle
-                    cx="26" cy="26" r="24" stroke="currentColor" strokeWidth="2"
-                    initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-                    transition={{ duration: 0.7, ease: EASE_EXPO }}
-                  />
-                  <motion.path
-                    d="M15 27l8 8 15-16" stroke="currentColor" strokeWidth="3"
-                    strokeLinecap="round" strokeLinejoin="round"
-                    initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-                    transition={{ duration: 0.5, delay: 0.5, ease: EASE_EXPO }}
-                  />
-                </svg>
-                <h3 className="mt-6 text-xl font-semibold tracking-[-0.02em]">
-                  Order placed.
-                </h3>
-                <p className="mt-2 text-[15px] leading-relaxed text-ink-muted">
-                  Reference <span className="font-mono">TBD-P-2026-0417</span>.
-                  {placed
-                    ? ` Your parts will be delivered to ${placed.division} within two working days, ${
-                        placed.payment === "cod"
-                          ? "payable to the rider on arrival"
-                          : `paid by ${
-                              PAYMENT_METHODS.find(
-                                (m) => m.value === placed.payment,
-                              )?.label
-                            }`
-                      }.`
-                    : " Your parts will be delivered within two working days."}
-                </p>
-                <button
-                  onClick={() => {
-                    reset();
-                    close();
-                  }}
-                  className="mt-7 text-[15px] font-medium text-toyota-red"
-                >
-                  Continue shopping
-                </button>
-              </div>
-            ) : step === "checkout" && resolved.length > 0 ? (
-              <CheckoutForm
-                total={total}
-                submitting={submitting}
-                onSubmit={placeOrder}
-                onBack={() => setStep("cart")}
-              />
-            ) : resolved.length === 0 ? (
+            {resolved.length === 0 ? (
               <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
                 <span className="flex size-16 items-center justify-center rounded-full bg-ink/[0.05] text-ink-muted">
                   <ShoppingBag className="size-7" strokeWidth={1.25} />
@@ -266,13 +193,15 @@ export default function CartSheet() {
                     </div>
                   </dl>
 
-                  <MagneticButton
-                    variant="red"
-                    className="mt-5 w-full"
-                    onClick={() => setStep("checkout")}
+                  {/* Checkout is its own page, so the drawer closes as it
+                      navigates rather than leaving a sheet over the form. */}
+                  <Link
+                    href="/genuine-parts/checkout"
+                    onClick={close}
+                    className="mt-5 flex min-h-[44px] w-full items-center justify-center rounded-full bg-toyota-red px-7 py-3.5 text-[15px] font-medium tracking-[-0.01em] text-white shadow-[0_4px_16px_rgba(235,10,30,0.24)] transition-colors duration-200 hover:bg-toyota-red-dark"
                   >
                     Proceed to Checkout
-                  </MagneticButton>
+                  </Link>
                   <p className="mt-3 text-center text-[12px] text-ink-muted">
                     Demonstration checkout — no payment is taken.
                   </p>

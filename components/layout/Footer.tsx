@@ -39,7 +39,7 @@ const COLUMNS = [
   {
     title: "Support",
     links: [
-      { label: "Book a Test Drive", href: "/#test-drive" },
+      { label: "Book a Test Drive", href: "/book-test-drive" },
       { label: "Contact Us", href: "/#dealers" },
       { label: "Owner's Manuals", href: "/service?tab=book" },
       { label: "Service Schedule", href: "/service?tab=book" },

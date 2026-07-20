@@ -122,7 +122,7 @@ export default function Nav() {
 
           <div className="flex items-center gap-2">
             <MagneticButton
-              href="/#test-drive"
+              href="/book-test-drive"
               variant="red"
               className="hidden px-5 py-2.5 text-sm sm:inline-flex"
             >
@@ -299,7 +299,7 @@ export default function Nav() {
 
               <div className="mt-8">
                 <MagneticButton
-                  href="/#test-drive"
+                  href="/book-test-drive"
                   variant="red"
                   className="w-full"
                 >
