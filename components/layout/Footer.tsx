@@ -86,11 +86,11 @@ export default function Footer() {
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.2fr_repeat(4,1fr)]">
           <div>
             <Image
-              src="/logos/ToyotaCorporateLogo_Black_RGB.png"
+              src="/logos/ToyotaProductLogo_Secondary_Black_RGB.png"
               alt="Toyota"
-              width={140}
-              height={44}
-              className="h-[30px] w-auto"
+              width={306}
+              height={100}
+              className="h-[44px] w-auto"
             />
             <p className="measure mt-5 text-[15px] leading-relaxed text-ink-muted">
               Toyota vehicles, genuine parts and factory-trained service across

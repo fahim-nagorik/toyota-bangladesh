@@ -77,13 +77,16 @@ export default function Nav() {
       >
         <div className="container-site flex h-[72px] items-center justify-between gap-6">
           <Link href="/" aria-label="Toyota Bangladesh — home" className="shrink-0">
+            {/* Product logo (emblem + wordmark). The asset carries brand
+                clear-space — only ~41% of its height is ink — so it is set
+                taller than the old corporate wordmark to read at the same size. */}
             <Image
-              src="/logos/ToyotaCorporateLogo_Red_RGB.png"
+              src="/logos/ToyotaProductLogo_Secondary_Black_RGB.png"
               alt="Toyota"
-              width={120}
-              height={38}
+              width={306}
+              height={100}
               priority
-              className="h-[26px] w-auto md:h-[30px]"
+              className="h-[38px] w-auto md:h-[44px]"
             />
           </Link>
 
@@ -217,11 +220,11 @@ export default function Nav() {
           >
             <div className="container-site flex h-[72px] items-center justify-between">
               <Image
-                src="/logos/ToyotaCorporateLogo_Red_RGB.png"
+                src="/logos/ToyotaProductLogo_Secondary_Black_RGB.png"
                 alt="Toyota"
-                width={120}
-                height={38}
-                className="h-[26px] w-auto"
+                width={306}
+                height={100}
+                className="h-[38px] w-auto"
               />
               <button
                 onClick={() => setMobileOpen(false)}
