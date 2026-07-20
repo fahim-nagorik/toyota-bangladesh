@@ -21,7 +21,7 @@ const CARDS = [
     title: "Toyota Safety Sense",
     body: "Pre-Collision braking, radar cruise, lane tracing and road-sign assist. Fitted as standard across the range, not sold as an options pack.",
     image: "/tech/safety-sense.webp",
-    href: "/#safety",
+    href: "/safety",
   },
   {
     Icon: Radio,

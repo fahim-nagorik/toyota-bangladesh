@@ -10,7 +10,7 @@ import { formatBDT, EASE_EXPO, cn } from "@/lib/utils";
 import MagneticButton from "@/components/ui/MagneticButton";
 
 const LINKS = [
-  { label: "Models", href: "/#models", mega: true },
+  { label: "Models", href: "/models", mega: true },
   { label: "Technology", href: "/technology" },
   { label: "Safety", href: "/safety" },
   { label: "Offers", href: "/offers" },
@@ -96,17 +96,21 @@ export default function Nav() {
           >
             {LINKS.map((link) =>
               link.mega ? (
-                <button
+                // A link, not a button: Models is a real page now. Hover and
+                // focus still open the mega panel, so the shortcut to an
+                // individual model survives alongside the destination.
+                <Link
                   key={link.label}
+                  href={link.href}
                   onMouseEnter={openMega}
                   onFocus={openMega}
-                  onClick={() => setMega((v) => !v)}
+                  onClick={() => setMega(false)}
                   aria-expanded={mega}
                   aria-haspopup="true"
                   className="rounded-full px-4 py-2 text-[15px] font-medium text-ink/80 transition-colors hover:text-ink"
                 >
                   {link.label}
-                </button>
+                </Link>
               ) : (
                 <Link
                   key={link.label}
@@ -157,7 +161,7 @@ export default function Nav() {
                   <div className="mb-6 flex items-baseline justify-between">
                     <p className="eyebrow">The Range</p>
                     <Link
-                      href="/#models"
+                      href="/models"
                       className="inline-flex items-center gap-1 text-sm font-medium text-toyota-red"
                     >
                       View all {VEHICLES.length} models

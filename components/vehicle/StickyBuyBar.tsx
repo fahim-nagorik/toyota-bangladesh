@@ -38,7 +38,7 @@ export default function StickyBuyBar({ vehicle }: { vehicle: Vehicle }) {
               </p>
             </div>
             <Link
-              href="/#test-drive"
+              href="/book-test-drive"
               className="shrink-0 rounded-full bg-toyota-red px-6 py-3 text-[15px] font-medium text-white"
             >
               Book Test Drive
