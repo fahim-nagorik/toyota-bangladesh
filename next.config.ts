@@ -6,7 +6,10 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        source: "/vehicles/:slug",
+        // Extensionless segments only. The vehicle photography is served from
+        // public/vehicles/*.webp, and an unrestricted :slug would redirect
+        // those image requests to /models/*.webp and break every car image.
+        source: "/vehicles/:slug([^.]+)",
         destination: "/models/:slug",
         permanent: true,
       },
