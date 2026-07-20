@@ -146,8 +146,11 @@ export default function Nav() {
               onMouseEnter={openMega}
               className="absolute inset-x-0 top-full hidden border-t border-hairline lg:block"
             >
-              <div className="glass border-x-0 border-b border-t-0 border-b-hairline">
-                <div className="container-site py-10">
+              {/* Solid, not glass: this panel spans the full width over the
+                  hero, and at any translucency the hero art and buttons read
+                  straight through the model names. */}
+              <div className="no-scrollbar max-h-[calc(100dvh-5rem)] overflow-y-auto border-b border-hairline bg-bg shadow-[0_18px_40px_rgba(0,0,0,0.08)]">
+                <div className="container-site py-8">
                   <div className="mb-6 flex items-baseline justify-between">
                     <p className="eyebrow">The Range</p>
                     <Link
@@ -158,7 +161,7 @@ export default function Nav() {
                       <ChevronRight className="size-4" />
                     </Link>
                   </div>
-                  <ul className="grid grid-cols-4 gap-x-6 gap-y-8">
+                  <ul className="grid grid-cols-4 gap-x-6 gap-y-6">
                     {VEHICLES.map((v, i) => (
                       <motion.li
                         key={v.slug}
