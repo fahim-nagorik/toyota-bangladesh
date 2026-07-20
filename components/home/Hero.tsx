@@ -50,7 +50,7 @@ export default function Hero() {
           </motion.p>
 
           <RevealText
-            text="Let's Go Places."
+            text="Let's Go Places"
             as="h1"
             className="text-hero mt-4"
             delay={0.2}
