@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Menu, X, ChevronRight } from "lucide-react";
 import { VEHICLES } from "@/lib/data/vehicles";
@@ -10,7 +10,7 @@ import { formatBDT, EASE_EXPO, cn } from "@/lib/utils";
 import MagneticButton from "@/components/ui/MagneticButton";
 
 const LINKS = [
-  { label: "Models", href: "/models", mega: true },
+  { label: "Models", href: "/models" },
   { label: "Technology", href: "/technology" },
   { label: "Safety", href: "/safety" },
   { label: "Offers", href: "/offers" },
@@ -20,10 +20,8 @@ const LINKS = [
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
-  const [mega, setMega] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const reduced = useReducedMotion();
-  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Glass kicks in past 60px (§3.1).
   useEffect(() => {
@@ -43,37 +41,23 @@ export default function Nav() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
-      setMega(false);
-      setMobileOpen(false);
+      if (e.key === "Escape") setMobileOpen(false);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // Small grace period so a diagonal cursor path to the panel doesn't close it.
-  const openMega = () => {
-    if (closeTimer.current) clearTimeout(closeTimer.current);
-    setMega(true);
-  };
-  const closeMega = () => {
-    if (closeTimer.current) clearTimeout(closeTimer.current);
-    closeTimer.current = setTimeout(() => setMega(false), 120);
-  };
-
-  const solid = scrolled || mega;
 
   return (
     <>
       <header
         className={cn(
           "fixed inset-x-0 top-0 z-50 transition-all duration-500",
-          solid
+          scrolled
             ? "glass border-x-0 border-t-0 border-b border-b-hairline"
             : "border-b border-transparent bg-transparent",
         )}
         style={{ transitionTimingFunction: "cubic-bezier(0.16,1,0.3,1)" }}
-        onMouseLeave={closeMega}
       >
         <div className="container-site flex h-[72px] items-center justify-between gap-6">
           <Link href="/" aria-label="Toyota Bangladesh — home" className="shrink-0">
@@ -94,34 +78,15 @@ export default function Nav() {
             aria-label="Primary"
             className="hidden items-center gap-1 lg:flex"
           >
-            {LINKS.map((link) =>
-              link.mega ? (
-                // A link, not a button: Models is a real page now. Hover and
-                // focus still open the mega panel, so the shortcut to an
-                // individual model survives alongside the destination.
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  onMouseEnter={openMega}
-                  onFocus={openMega}
-                  onClick={() => setMega(false)}
-                  aria-expanded={mega}
-                  aria-haspopup="true"
-                  className="rounded-full px-4 py-2 text-[15px] font-medium text-ink/80 transition-colors hover:text-ink"
-                >
-                  {link.label}
-                </Link>
-              ) : (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  onMouseEnter={closeMega}
-                  className="rounded-full px-4 py-2 text-[15px] font-medium text-ink/80 transition-colors hover:text-ink"
-                >
-                  {link.label}
-                </Link>
-              ),
-            )}
+            {LINKS.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="rounded-full px-4 py-2 text-[15px] font-medium text-ink/80 transition-colors hover:text-ink"
+              >
+                {link.label}
+              </Link>
+            ))}
           </nav>
 
           <div className="flex items-center gap-2">
@@ -142,74 +107,6 @@ export default function Nav() {
           </div>
         </div>
 
-        {/* Mega menu — §3.1 */}
-        <AnimatePresence>
-          {mega && (
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.35, ease: EASE_EXPO }}
-              onMouseEnter={openMega}
-              className="absolute inset-x-0 top-full hidden border-t border-hairline lg:block"
-            >
-              {/* Solid, not glass: this panel spans the full width over the
-                  hero, and at any translucency the hero art and buttons read
-                  straight through the model names. */}
-              <div className="no-scrollbar max-h-[calc(100dvh-5rem)] overflow-y-auto border-b border-hairline bg-bg shadow-[0_18px_40px_rgba(0,0,0,0.08)]">
-                <div className="container-site py-8">
-                  <div className="mb-6 flex items-baseline justify-between">
-                    <p className="eyebrow">The Range</p>
-                    <Link
-                      href="/models"
-                      className="inline-flex items-center gap-1 text-sm font-medium text-toyota-red"
-                    >
-                      View all {VEHICLES.length} models
-                      <ChevronRight className="size-4" />
-                    </Link>
-                  </div>
-                  <ul className="grid grid-cols-4 gap-x-6 gap-y-6">
-                    {VEHICLES.map((v, i) => (
-                      <motion.li
-                        key={v.slug}
-                        initial={reduced ? false : { opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{
-                          duration: 0.4,
-                          delay: i * 0.03,
-                          ease: EASE_EXPO,
-                        }}
-                      >
-                        <Link
-                          href={`/models/${v.slug}`}
-                          onClick={() => setMega(false)}
-                          className="group block"
-                        >
-                          <div className="relative mb-3 aspect-[4/3] overflow-hidden rounded-[16px] bg-bg-tint">
-                            <Image
-                              src={v.image}
-                              alt={v.name}
-                              fill
-                              sizes="(max-width: 1440px) 22vw, 300px"
-                              className="object-contain mix-blend-multiply p-3 transition-transform duration-500 group-hover:scale-105"
-                              style={{ transitionTimingFunction: "cubic-bezier(0.16,1,0.3,1)" }}
-                            />
-                          </div>
-                          <p className="text-[15px] font-medium leading-tight">
-                            {v.name}
-                          </p>
-                          <p className="mt-0.5 text-[13px] text-ink-muted">
-                            {formatBDT(v.priceFrom)}
-                          </p>
-                        </Link>
-                      </motion.li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </header>
 
       {/* Mobile overlay — §3.1 */}
