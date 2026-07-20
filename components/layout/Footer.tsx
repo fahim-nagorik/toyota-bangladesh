@@ -8,10 +8,10 @@ import { VEHICLES } from "@/lib/data/vehicles";
 
 const COLUMNS = [
   {
-    title: "Vehicles",
+    title: "Models",
     links: VEHICLES.slice(0, 6).map((v) => ({
       label: v.name,
-      href: `/vehicles/${v.slug}`,
+      href: `/models/${v.slug}`,
     })),
   },
   {
@@ -28,19 +28,19 @@ const COLUMNS = [
   {
     title: "Company",
     links: [
-      { label: "About Toyota Bangladesh", href: "/#technology" },
-      { label: "Toyota Safety Sense", href: "/#safety" },
-      { label: "Hybrid Electric", href: "/#technology" },
-      { label: "Current Offers", href: "/#offers" },
-      { label: "Find a Dealer", href: "/#dealers" },
-      { label: "Careers", href: "/#dealers" },
+      { label: "About Toyota Bangladesh", href: "/technology" },
+      { label: "Toyota Safety Sense", href: "/safety" },
+      { label: "Hybrid Electric", href: "/technology" },
+      { label: "Current Offers", href: "/offers" },
+      { label: "Find a Dealer", href: "/dealers" },
+      { label: "Careers", href: "/dealers" },
     ],
   },
   {
     title: "Support",
     links: [
       { label: "Book a Test Drive", href: "/book-test-drive" },
-      { label: "Contact Us", href: "/#dealers" },
+      { label: "Contact Us", href: "/dealers" },
       { label: "Owner's Manuals", href: "/service?tab=book" },
       { label: "Service Schedule", href: "/service?tab=book" },
       { label: "Warranty Terms", href: "/service?tab=book" },

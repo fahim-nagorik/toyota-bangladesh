@@ -72,8 +72,8 @@ export default function Hero() {
             transition={{ duration: 0.9, delay: 0.75, ease: EASE_EXPO }}
             className="mt-8 flex flex-wrap gap-3"
           >
-            <MagneticButton href="/#vehicles" variant="red">
-              Explore Vehicles
+            <MagneticButton href="/#models" variant="red">
+              Explore Models
             </MagneticButton>
             <MagneticButton href="/#test-drive" variant="glass">
               Book a Test Drive

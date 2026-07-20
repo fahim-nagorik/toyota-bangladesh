@@ -14,7 +14,7 @@ const CARDS = [
     title: "Toyota Hybrid System",
     body: "A petrol engine and two electric motors that hand off to each other automatically. Nothing to plug in, and the battery is warranted for a decade.",
     image: "/tech/hybrid.webp",
-    href: "/vehicles/rav4",
+    href: "/models/rav4",
   },
   {
     Icon: ShieldCheck,

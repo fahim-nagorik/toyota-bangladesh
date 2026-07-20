@@ -10,12 +10,12 @@ import { formatBDT, EASE_EXPO, cn } from "@/lib/utils";
 import MagneticButton from "@/components/ui/MagneticButton";
 
 const LINKS = [
-  { label: "Vehicles", href: "/#vehicles", mega: true },
-  { label: "Technology", href: "/#technology" },
-  { label: "Safety", href: "/#safety" },
-  { label: "Offers", href: "/#offers" },
+  { label: "Models", href: "/#models", mega: true },
+  { label: "Technology", href: "/technology" },
+  { label: "Safety", href: "/safety" },
+  { label: "Offers", href: "/offers" },
   { label: "Service", href: "/service" },
-  { label: "Dealers", href: "/#dealers" },
+  { label: "Dealers", href: "/dealers" },
 ];
 
 export default function Nav() {
@@ -157,7 +157,7 @@ export default function Nav() {
                   <div className="mb-6 flex items-baseline justify-between">
                     <p className="eyebrow">The Range</p>
                     <Link
-                      href="/#vehicles"
+                      href="/#models"
                       className="inline-flex items-center gap-1 text-sm font-medium text-toyota-red"
                     >
                       View all {VEHICLES.length} models
@@ -177,7 +177,7 @@ export default function Nav() {
                         }}
                       >
                         <Link
-                          href={`/vehicles/${v.slug}`}
+                          href={`/models/${v.slug}`}
                           onClick={() => setMega(false)}
                           className="group block"
                         >
@@ -274,7 +274,7 @@ export default function Nav() {
                   {VEHICLES.map((v) => (
                     <li key={v.slug}>
                       <Link
-                        href={`/vehicles/${v.slug}`}
+                        href={`/models/${v.slug}`}
                         onClick={() => setMobileOpen(false)}
                         className="block rounded-[16px] bg-bg-tint p-3"
                       >

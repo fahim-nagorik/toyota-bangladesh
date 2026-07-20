@@ -29,7 +29,7 @@ export default function RelatedModels({ models }: { models: Vehicle[] }) {
               transition={{ duration: 0.6, delay: i * 0.08, ease: EASE_EXPO }}
             >
               <Link
-                href={`/vehicles/${v.slug}`}
+                href={`/models/${v.slug}`}
                 className="group flex h-full flex-col rounded-[24px] border border-hairline bg-white p-5 transition-[transform,box-shadow] duration-500 hover:-translate-y-2 hover:shadow-[0_24px_60px_rgba(0,0,0,0.10)] md:p-6"
                 style={{ transitionTimingFunction: "cubic-bezier(0.16,1,0.3,1)" }}
               >
