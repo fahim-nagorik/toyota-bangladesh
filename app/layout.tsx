@@ -1,21 +1,31 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import LenisProvider from "@/components/ui/LenisProvider";
 import ScrollProgress from "@/components/ui/ScrollProgress";
 import Nav from "@/components/layout/Nav";
 import Footer from "@/components/layout/Footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
+/* Toyota Type — the corporate typeface (Toyota brand guideline), self-hosted.
+   Book=400, Regular=500, Semibold=600, Bold=700. Arial is Toyota's sanctioned
+   system fallback (used for the size-adjusted metric fallback too). */
+const toyotaType = localFont({
+  variable: "--font-toyota-sans",
+  display: "swap",
+  fallback: ["Arial", "Helvetica Neue", "Helvetica", "sans-serif"],
+  src: [
+    { path: "./fonts/ToyotaType-Book.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/ToyotaType-Regular.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/ToyotaType-Semibold.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/ToyotaType-Bold.woff2", weight: "700", style: "normal" },
+  ],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
+/* Toyota Script — restricted to the "Let's Go Places" signature tagline only. */
+const toyotaScript = localFont({
+  variable: "--font-toyota-script",
+  display: "swap",
+  src: [{ path: "./fonts/ToyotaScript2.woff2", weight: "400", style: "normal" }],
 });
 
 export const metadata: Metadata = {
@@ -36,7 +46,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      className={`${toyotaType.variable} ${toyotaScript.variable} antialiased`}
     >
       <body>
         <LenisProvider>

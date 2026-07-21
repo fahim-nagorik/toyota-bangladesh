@@ -123,7 +123,7 @@ export default function Hero() {
           <RevealText
             text="Let's Go Places"
             as="h1"
-            className="text-hero mt-4"
+            className="text-hero font-script mt-4"
             delay={0.2}
             stagger={0.09}
           />
