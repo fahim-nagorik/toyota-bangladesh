@@ -18,6 +18,13 @@ import MagneticButton from "@/components/ui/MagneticButton";
 
 /** Auto-advance interval for the hero carousel. */
 const SLIDE_MS = 5500;
+
+// Slide easing is intentionally NOT the site's expo-out default. A large hero
+// image is a "complex" transition (ui-ux-pro-max: 500–800ms, expo.inOut), so it
+// eases in and out — expo-out starts at full velocity and reads as a fast snap.
+// This is easeInOutExpo: slow start, quick middle, soft landing.
+const EASE_SLIDE = [0.87, 0, 0.13, 1] as const;
+const SLIDE_DURATION = 0.8;
 /** Drag distance/velocity past which a swipe commits to the next/prev slide. */
 const SWIPE_OFFSET = 60;
 const SWIPE_VELOCITY = 400;
@@ -170,8 +177,11 @@ export default function Hero() {
             animate="center"
             exit="exit"
             transition={{
-              x: { duration: 0.6, ease: EASE_EXPO },
-              opacity: { duration: reduced ? 0.25 : 0.35, ease: EASE_EXPO },
+              x: { duration: SLIDE_DURATION, ease: EASE_SLIDE },
+              opacity: {
+                duration: reduced ? 0.25 : 0.55,
+                ease: EASE_SLIDE,
+              },
             }}
             drag={isSlideshow && !reduced ? "x" : false}
             dragConstraints={{ left: 0, right: 0 }}
