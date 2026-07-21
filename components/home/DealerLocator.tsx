@@ -2,14 +2,18 @@
 
 import { useMemo, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { MapPin, Phone, Clock, Search } from "lucide-react";
+import { MapPin, Phone, Clock, Search, ChevronDown } from "lucide-react";
 import { DEALERS } from "@/lib/data/dealers";
 import { EASE_EXPO, cn } from "@/lib/utils";
 import { Reveal } from "@/components/ui/RevealText";
 
+/** How many dealers show before the list collapses (§3.7). */
+const COLLAPSED_COUNT = 3;
+
 export default function DealerLocator() {
   const [query, setQuery] = useState("");
   const [activeId, setActiveId] = useState(DEALERS[0].id);
+  const [expanded, setExpanded] = useState(false);
   const reduced = useReducedMotion();
 
   const results = useMemo(() => {
@@ -22,6 +26,12 @@ export default function DealerLocator() {
         d.address.toLowerCase().includes(q),
     );
   }, [query]);
+
+  // A search already narrows the list, so collapsing filtered results on top
+  // of that just hides matches. The collapse only applies to the full list.
+  const searching = query.trim().length > 0;
+  const collapsed = !searching && !expanded;
+  const visible = collapsed ? results.slice(0, COLLAPSED_COUNT) : results;
 
   const active = DEALERS.find((d) => d.id === activeId) ?? DEALERS[0];
 
@@ -58,11 +68,8 @@ export default function DealerLocator() {
               />
             </div>
 
-            <ul
-              className="no-scrollbar mt-4 max-h-[520px] space-y-3 overflow-y-auto pr-1"
-              aria-label="Dealer list"
-            >
-              {results.map((d) => {
+            <ul className="mt-4 space-y-3" aria-label="Dealer list">
+              {visible.map((d) => {
                 const isActive = d.id === activeId;
                 return (
                   <li key={d.id}>
@@ -130,6 +137,28 @@ export default function DealerLocator() {
                 </li>
               )}
             </ul>
+
+            {/* Collapse control — only when the full list is longer than the
+                collapsed view. Hidden during a search, which shows all matches. */}
+            {!searching && results.length > COLLAPSED_COUNT && (
+              <button
+                type="button"
+                onClick={() => setExpanded((v) => !v)}
+                aria-expanded={expanded}
+                className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-hairline bg-bg-alt py-3 text-[14px] font-medium text-ink transition-colors hover:bg-bg-tint"
+              >
+                {expanded
+                  ? "Show fewer dealers"
+                  : `Show all ${results.length} dealers`}
+                <ChevronDown
+                  className={cn(
+                    "size-4 transition-transform duration-300",
+                    expanded && "rotate-180",
+                  )}
+                  strokeWidth={2}
+                />
+              </button>
+            )}
           </Reveal>
 
           {/* Right: stylised map panel */}
