@@ -19,7 +19,7 @@ export interface HeroContent {
 export const HERO: HeroContent = {
   video: "/rav4/hero.mp4",
   poster: "/rav4/hero-poster.jpg",
-  eyebrow: "RAV4 Hybrid",
+  eyebrow: "",
   heading: "Take the wheel.",
   subhead: "Electrified capability, engineered for every road in Bangladesh.",
 };
