@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Menu, X, ChevronRight } from "lucide-react";
@@ -22,6 +23,13 @@ export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const reduced = useReducedMotion();
+  const pathname = usePathname();
+
+  // The home hero is a dark full-bleed video, so the transparent nav needs
+  // light text/logo while it sits over it. Every other route has a light top,
+  // and once the glass bar kicks in the nav is light-backed everywhere — both
+  // keep the default dark ink.
+  const overDarkHero = pathname === "/" && !scrolled;
 
   // Glass kicks in past 60px (§3.1).
   useEffect(() => {
@@ -65,7 +73,11 @@ export default function Nav() {
                 clear-space — only ~41% of its height is ink — so it is set
                 taller than the old corporate wordmark to read at the same size. */}
             <Image
-              src="/logos/ToyotaProductLogo_Secondary_Black_RGB.png"
+              src={
+                overDarkHero
+                  ? "/logos/ToyotaProductLogo_Secondary_White_RGB.png"
+                  : "/logos/ToyotaProductLogo_Secondary_Black_RGB.png"
+              }
               alt="Toyota"
               width={306}
               height={100}
@@ -82,7 +94,12 @@ export default function Nav() {
               <Link
                 key={link.label}
                 href={link.href}
-                className="rounded-full px-4 py-2 text-[15px] font-medium text-ink/80 transition-colors hover:text-ink"
+                className={cn(
+                  "rounded-full px-4 py-2 text-[15px] font-medium transition-colors",
+                  overDarkHero
+                    ? "text-white/85 hover:text-white"
+                    : "text-ink/80 hover:text-ink",
+                )}
               >
                 {link.label}
               </Link>
@@ -100,7 +117,10 @@ export default function Nav() {
             <button
               onClick={() => setMobileOpen(true)}
               aria-label="Open menu"
-              className="hit-44 flex size-11 items-center justify-center rounded-full text-ink lg:hidden"
+              className={cn(
+                "hit-44 flex size-11 items-center justify-center rounded-full lg:hidden",
+                overDarkHero ? "text-white" : "text-ink",
+              )}
             >
               <Menu className="size-6" strokeWidth={1.5} />
             </button>
