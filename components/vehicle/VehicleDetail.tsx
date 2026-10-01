@@ -51,7 +51,7 @@ export default function VehicleDetail({
               <h2 className="text-h2 mt-3">Walk around it.</h2>
               <p className="measure mt-6 text-[17px] leading-relaxed text-ink-muted">
                 Drag to rotate through a full turn. Tap the red markers to open
-                the details, or use the arrow keys once the viewer has focus.
+                the details, or press INT to step inside the cabin.
               </p>
             </Reveal>
             <Rav4Viewer colors={vehicle.colors} />
